@@ -1,9 +1,12 @@
 const express = require('express')
-const mongoose = require('mongoose');
+const database = require("./config/database");
+require("dotenv").config();
 const route = require("./api/routes/client/index.route")
 
+database.connect();
+
 const app = express()
-const port = 3000
+const port = process.env.PORT;
 
 route(app);
 
