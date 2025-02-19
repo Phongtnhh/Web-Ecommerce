@@ -7,6 +7,10 @@ module.exports.index = async (req, res) => {
         deleted: false
     };
 
+    let sort = {
+        position : "decs"
+    }
+
     if (req.query.status) {
         find.status = req.query.status;
     };
@@ -29,7 +33,7 @@ module.exports.index = async (req, res) => {
     );
     // End Phan trang
 
-    const products = await Product.find(find).limit(objectPagination.limitItem).skip(objectPagination.skip);
+    const products = await Product.find(find).sort(sort).limit(objectPagination.limitItem).skip(objectPagination.skip);
 
     const productsJson = products.map(item => {
         return item
@@ -59,19 +63,57 @@ module.exports.changeStatus = async (req, res) => {
     res.redirect("back");
 }
 
+// [PATCH] /admin/products/change-multi
 module.exports.changeMulti = async (req, res) => {
     const ids = req.body.ids.split(", ");
     const type = req.body.type;
 
     switch (type) {
         case "active":
-            await Product.updateMany({_id : { $in: ids }}, {status : "active"});
+            await Product.updateMany({
+                _id: {
+                    $in: ids
+                }
+            }, {
+                status: "active"
+            });
             break;
-        
+
         case "inactive":
-            await Product.updateMany({_id : { $in: ids }}, {status : "inactive"});
-        break;
+            await Product.updateMany({
+                _id: {
+                    $in: ids
+                }
+            }, {
+                status: "inactive"
+            });
+            break;
+
+        case "delete-all":
+            await Product.updateMany({
+                _id: {
+                    $in: ids
+                }
+            }, {
+                deleted: true,
+                deletedAt: new Date()
+            });
+
         default:
             break;
     }
 }
+
+// [PATCH] /admin/products/deleteItem
+module.exports.deleteItem = async (req, res) => {
+    const id = req.params.id;
+    await Product.updateOne({
+        _id: id
+    }, {
+        deleted: "true",
+        deletedAt: new Date()
+    });
+
+    res.redirect("back");
+}
+
