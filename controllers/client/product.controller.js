@@ -3,7 +3,7 @@ const Product = require("../../model/product.model");
 module.exports.index = async (req, res) => {
     const products = await Product.find({
         status : "active",
-        deleted: "false "
+        deleted: "false"
     });
      
     const newProducts =  products.map(item => {
