@@ -60,6 +60,8 @@ module.exports.changeStatus = async (req, res) => {
         status: status
     });
 
+    req.flash("success", "Cập nhập trạng thái thành công!");
+
     res.redirect("back");
 }
 
@@ -113,7 +115,7 @@ module.exports.deleteItem = async (req, res) => {
         deleted: "true",
         deletedAt: new Date()
     });
-
+    req.flash("Success", "Đã xóa sản phẩm thành công!");
     res.redirect("back");
 }
 
