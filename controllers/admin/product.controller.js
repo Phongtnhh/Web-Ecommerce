@@ -23,7 +23,7 @@ module.exports.index = async (req, res) => {
     }
 
     // Phan trang
-    const countProducts = await Product.find(find);
+    const countProducts = await Product.countDocuments(find);
     let objectPagination = paginationHelper({
             currentPage: 1,
             limitItem: 4
@@ -33,7 +33,7 @@ module.exports.index = async (req, res) => {
     );
     // End Phan trang
 
-    const products = await Product.find(find).sort(sort).limit(objectPagination.limitItem).skip(objectPagination.skip);
+    const products = await Product.find(find).limit(objectPagination.limitItem).skip(objectPagination.skip);
 
     const productsJson = products.map(item => {
         return item
@@ -117,5 +117,27 @@ module.exports.deleteItem = async (req, res) => {
     });
     req.flash("Success", "Đã xóa sản phẩm thành công!");
     res.redirect("back");
+}
+
+// [POST] /admin/products/createPost
+module.exports.createPost  = async (req, res) => {
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
+
+    if (!req.body.position || req.body.position === "") {
+        const positionTmp = await Product.countDocuments(); 
+        req.body.position = positionTmp + 1;
+    } else {
+        req.body.position = parseInt(req.body.position);
+        if (Number.isNaN(req.body.position)) {
+            
+        }
+    }
+
+    const product = new Product(req.body);
+    console.log(product);
+    product.save();
+
 }
 
