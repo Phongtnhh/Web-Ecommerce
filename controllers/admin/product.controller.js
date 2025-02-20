@@ -1,6 +1,6 @@
 const Product = require("../../model/product.model");
 const paginationHelper = require("../../helpers/pagination");
-
+const systemConfig = require("../../config/system");
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
     let find = {
@@ -44,8 +44,6 @@ module.exports.index = async (req, res) => {
         keyword: req.query.keyword,
         currentPage: objectPagination.currentPage
     }
-
-    console.log(result);
 
     res.json(result);
 }
@@ -136,8 +134,39 @@ module.exports.createPost  = async (req, res) => {
     }
 
     const product = new Product(req.body);
-    console.log(product);
     product.save();
 
+    res.redirect(`${systemConfig.prefixAdmin}/prodcucts`);
+
 }
+
+// [GET] /admi/products/edit/:id
+module.exports.edit = async (req, res) => {
+    const product = await Product.findOne({ _id: req.params.id });
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.json(product);
+}
+
+// [PATCH] /admi/products/edit
+module.exports.editPatch = async (req, res) => {
+    const id = req.params.id;
+
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
+    req.body.position = parseInt(req.body.position);
+
+    try{
+        await Product.updateOne({ _id : id}, req.body);
+        req.flash("success", "Cap nhap thanh cong!");
+    }catch (error){
+        req.flash("error", "Cap nhap that bai!");
+    }
+    res.redirect("back");
+}
+
 
