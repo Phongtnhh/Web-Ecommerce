@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const path = require("path");
 const database = require("./config/database");
 const bodyParser = require("body-parser");
 const session = require("express-session");
@@ -20,7 +21,7 @@ app.use(session({ cookie: { maxAge: 60000 }}));
 app.use(flash());
 // end flash
 
-
+app.use("./tinymce", express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
