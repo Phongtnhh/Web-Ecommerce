@@ -12,5 +12,5 @@ router.post("/createPost",
     validate.createPost,
     controller.createPost);
 
-
+router.patch('/edit', controller.edit);
 module.exports = router;

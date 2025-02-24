@@ -35,3 +35,13 @@ module.exports.createPost = async (req, res)=> {
     await record.save();
         res.redirect(`${systemConfig.prefixAdmin}/prodcucts-category`);
 }
+
+
+// [PATCH] admin/product-category /edit
+module.exports.edit = async (req, res)=> {
+    const id = req.body.id;
+    
+    req.body.position = parseInt(req.body.position);
+
+    await ProductCategory.updateOne({_id : id}, req.body);
+}
