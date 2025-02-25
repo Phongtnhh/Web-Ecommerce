@@ -2,6 +2,7 @@ const dashBoardRoute = require("../admin/dashBoard.route");
 const productRoute = require("../admin/product.route");
 const loginRoute = require("../admin/login.route");
 const productCategoryRoute = require("../admin/product-category.route");
+const RoleRoute = require("../admin/role.route");
 
 const systemConfig = require("../../../config/system");
 
@@ -15,4 +16,6 @@ module.exports = (app) => {
     app.use( PATH_ADMIN + '/products', productRoute );
 
     app.use( PATH_ADMIN + '/product-category', productCategoryRoute);
+
+    app.use( PATH_ADMIN + '/role', RoleRoute);
 }
