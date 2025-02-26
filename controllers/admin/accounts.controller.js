@@ -55,7 +55,10 @@ module.exports.edit = async (req, res)=> {
         }  
         
         await Account.updateOne({_id : id},req.body);
-        req.flash("success","cap nhap thanh cong");
+        res.json({
+            code : 200,
+            massage: "cap nhap thanh cong!"
+        })
     }
     res.redirect("back");
 }

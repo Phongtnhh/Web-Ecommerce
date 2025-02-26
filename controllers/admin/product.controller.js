@@ -60,22 +60,31 @@ module.exports.index = async (req, res) => {
 module.exports.changeStatus = async (req, res) => {
     const id = req.params.id;
     const status = req.params.status;
+    const updatedBy = {
+        account_id: req.account.id,
+        updateAt : new Date()
+    }
     await Product.updateOne({
         _id: id
     }, {
-        status: status
+        status: status,
+        $push: {updatedBy : updatedBy}
     });
 
-    req.flash("success", "Cập nhập trạng thái thành công!");
-
-    res.redirect("back");
+    res.json({
+        code: 200,
+        message: "thay doi thanh cong!"
+    })
 }
 
 // [PATCH] /admin/products/change-multi
 module.exports.changeMulti = async (req, res) => {
     const ids = req.body.ids.split(", ");
     const type = req.body.type;
-
+    const updatedBy = {
+        account_id: req.account.id,
+        updateAt : new Date()
+    }
     switch (type) {
         case "active":
             await Product.updateMany({
@@ -83,7 +92,8 @@ module.exports.changeMulti = async (req, res) => {
                     $in: ids
                 }
             }, {
-                status: "active"
+                status: "active",
+                $push: {updatedBy : updatedBy}
             });
             break;
 
@@ -93,7 +103,8 @@ module.exports.changeMulti = async (req, res) => {
                     $in: ids
                 }
             }, {
-                status: "inactive"
+                status: "inactive",
+                $push: {updatedBy : updatedBy}
             });
             break;
 
@@ -176,17 +187,27 @@ module.exports.editPatch = async (req, res) => {
     req.body.position = parseInt(req.body.position);
 
     try {
+        const updatedBy = {
+            account_id : req.account.id,
+            updatedAt : new Date()
+        }
+
         await Product.updateOne({
             _id: id
-        }, req.body);
-        req.json({
+        },{ ...req.body,
+        $push: {updatedBy : updatedBy}
+        });
+        res.json({
             code : 200,
             message: "Cap nhap thanh cong!",
         })
     } catch (error) {
-        req.flash("error", "Cap nhap that bai!");
+        res.json({
+            code : 400,
+            message: "Cap nhap that bai!",
+        })
     }
-    res.redirect("back");
+
 }
 
 // [GET] /admin/products/detail/:id

@@ -5,6 +5,7 @@ const productCategoryRoute = require("../admin/product-category.route");
 const RoleRoute = require("../admin/role.route");
 const AccountRoute = require("../admin/account.route");
 const authRoute = require("../admin/auth.route");
+const myAccountRoute = require("../admin/myaccount.route");
 
 const systemConfig = require("../../../config/system");
 
@@ -23,4 +24,6 @@ module.exports = (app) => {
 
     app.use(PATH_ADMIN + '/accounts', AccountRoute);
     app.use(PATH_ADMIN + '/auth', authRoute);
+
+    app.use(PATH_ADMIN + '/myaccount', myAccountRoute);
 }
