@@ -19,8 +19,10 @@ module.exports.create = async (req, res)=> {
     });
 
     if(emailExist){
-        req.flash("error", "email da ton tai");
-        res.redirect("back");
+        res.json({
+            code : 400,
+            message: "Email khong ton tai"
+        })
     }else{
         req.body.password = md5(req.body.password);
     
@@ -40,8 +42,11 @@ module.exports.edit = async (req, res)=> {
         deleted: false,
     });
     if(emailExist){
-        req.flash("error", "email da ton tai");
-        res.redirect("back");
+        res.json({
+            code : 400,
+            message: "Email da ton tai!"
+        });
+        return;
     }else{
         if(req.body.password){
             req.body.password = md5(req.body.password);

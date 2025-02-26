@@ -1,6 +1,7 @@
 const Product = require("../../model/product.model");
 const paginationHelper = require("../../helpers/pagination");
 const systemConfig = require("../../config/system");
+const mongoose = require('mongoose');
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
     let find = {
@@ -99,13 +100,16 @@ module.exports.changeMulti = async (req, res) => {
         case "delete-all":
             await Product.updateMany({
                 _id: {
-                    $in: ids
-                }
+                    $in: ids,
+                    }
             }, {
                 deleted: true,
-                deletedAt: new Date()
+                deleteBy: {
+                    account_id : req.account.id,
+                    deletedAt: new Date()
+                }
             });
-
+            break;
         default:
             break;
     }
@@ -118,10 +122,15 @@ module.exports.deleteItem = async (req, res) => {
         _id: id
     }, {
         deleted: "true",
-        deletedAt: new Date()
+        deletedby : {
+            account_id : req.account.id,
+            deleteAt : new Date()
+        }
     });
-    req.flash("Success", "Đã xóa sản phẩm thành công!");
-    res.redirect("back");
+    res.json({
+        code: 200,
+        message: "xoa thanh cong!",
+    })
 }
 
 // [POST] /admin/products/createPost
@@ -139,8 +148,6 @@ module.exports.createPost = async (req, res) => {
 
     const product = new Product(req.body);
     product.save();
-
-    res.redirect(`${systemConfig.prefixAdmin}/prodcucts`);
 
 }
 
@@ -172,7 +179,10 @@ module.exports.editPatch = async (req, res) => {
         await Product.updateOne({
             _id: id
         }, req.body);
-        req.flash("success", "Cap nhap thanh cong!");
+        req.json({
+            code : 200,
+            message: "Cap nhap thanh cong!",
+        })
     } catch (error) {
         req.flash("error", "Cap nhap that bai!");
     }
