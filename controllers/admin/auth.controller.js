@@ -29,7 +29,6 @@ module.exports.login = async (req, res)=> {
     }
 
     const token = record.token;
-    res.cookie("token", token);
     res.json({
         code: 200,
         message : "dang nhap thanh cong",

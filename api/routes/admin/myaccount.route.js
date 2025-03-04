@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require("../../../middleware/auth.middleware");
+const authMiddleware = require("../../../middleware/admin/auth.middleware");
 const controller = require("../../../controllers/admin/myAccount.controller");
 
 router.get("/",authMiddleware.requireAuth, controller.index );
