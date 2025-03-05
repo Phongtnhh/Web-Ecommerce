@@ -1,5 +1,10 @@
 const User = require("../../model/user.model");
+const Cart = require("../../model/cart.model");
+const forgotPass= require("../../model/forgot-password.model");
+const sendMailHelper = require("../../helpers/sendMail");
+
 const md5 = require("md5");
+const generate =  require("../../helpers/generate");
 
 // [POST] auth/logout
 module.exports.logout = async (req, res) => {
@@ -56,7 +61,7 @@ module.exports.login = async (req, res) => {
         return;
     }
 
-    if(user.status === "locked") {
+    if(user.status === "inactive") {
         res.json({
             code : 200,
             massage : "tai khoan dang bi khoa!"
@@ -64,10 +69,101 @@ module.exports.login = async (req, res) => {
         return;
     }
 
+    const cart = await Cart.findOne({
+       user_id: user.id
+    });
+
+    if(cart){
+        res.cookies("cartId", cart.id);
+    }else{
+        console.log("chay qua day");
+        await Cart.updateOne({
+            _id : req.cookies.cartId,
+        },{
+            user_id: user.id,
+        });
+    }
+
     const token = user.tokenUser;
     res.json({
         code : 200,
         massage: "khi ban thay tin nhan nay, ban da dang nhap thanh cong",
         token : token,
+    })
+}
+
+// [POST] auth/password/forgot
+module.exports.forgotPass = async (req, res) => {
+    const email = req.body.email;
+    
+    const user = await User.findOne({
+        email: email,
+        deleted : false
+    });
+    if(!user){
+        res.json({
+            code : 400,
+            massage : "email hong ton tai be oi"
+        })
+        return;
+    }
+
+    const objectFotgotPass = {
+        email : email,
+        otp : generate.generateRandomString(6),
+        expiresAt : Date.now() + 10*60*1000,
+    }
+    const forgotPassword = new forgotPass(objectFotgotPass);
+    forgotPassword.save();
+
+    subject = "Ma OTP xac minh lay lai mat khau";
+    html = `
+        Ma OTP la <b>${objectFotgotPass.otp}</b>
+    `;
+    sendMailHelper.sendMail(email, subject, html);
+}
+
+// [POST] auth/password/otp
+module.exports.otp = async (req, res) => {
+    const email = req.query.email;
+    const otp = req.body.otp;
+
+    const result = await forgotPass.findOne({
+        email : email,
+        otp : otp,
+    });
+    
+    if(!result){
+        res.json({
+            code : 400,
+            massage: "OTP khong hop le"
+        })
+        return;
+    }
+
+    const user = await User.findOne({
+        email: email,
+    });
+
+    res.cookies("tokenUser", user.tokenUser);
+    res.json({
+        code : 200,
+        token: user.tokenUser,
+    })
+}
+
+// [POST] auth/password/reset
+module.exports.reset = async (req, res) => {
+    const password = req.body.password;
+    const token = req.cookies.tokenUser;
+
+    await User.updateOne({
+        tokenUser: token
+    },{
+        password : md5(password),
+    })
+    res.json({
+        code : 200,
+
     })
 }

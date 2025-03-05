@@ -8,10 +8,23 @@ module.exports.infoUser = async (req, res, next) => {
             deleted : false,
             status : "active"
         }).select("-password");
+        if(!user){
+            res.json({
+                code: 403,
+                message: "khong co quyen truy cap!"
+            });
+        }else{
+            req.user = user;
+            next();
+        }
+    }
+    else{
+        res.json({
+            code: 403,
+            message: "khong co quyen truy cap!"
+        });
     }
 
-    if(user){
-        req.user = user;
-    }
-    next();
+    
 }
+
