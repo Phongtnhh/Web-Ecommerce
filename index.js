@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const flash = require("express-flash");
+const cors = require('cors');
 require("dotenv").config();
 
 const app = express()
@@ -15,6 +16,7 @@ const routeadmin = require("./api/routes/admin/index.route");
 
 database.connect();
 
+app.use(cors());
 //flash
 app.use(cookieParser('toi<3em'));
 app.use(session({ cookie: { maxAge: 60000 }}));
@@ -30,8 +32,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //ROutes
 route(app);
 routeadmin(app);
+app.get("*", (req, res) => {
+  res.json({
+    code : 404,
+  })
+})
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0",() => {
   console.log(`Example app listening on port ${port}`)
 })
 

@@ -6,9 +6,6 @@ const sendMailHelper = require("../../helpers/sendMail");
 const md5 = require("md5");
 const generate =  require("../../helpers/generate");
 
-// [POST] auth/logout
-module.exports.logout = async (req, res) => {
-}
 
 // [POST] auth/register
 module.exports.register = async (req, res) => {
@@ -74,7 +71,7 @@ module.exports.login = async (req, res) => {
     });
 
     if(cart){
-        res.cookies("cartId", cart.id);
+        res.cookie("cartId", cart.id);
     }else{
         console.log("chay qua day");
         await Cart.updateOne({
@@ -91,6 +88,14 @@ module.exports.login = async (req, res) => {
         token : token,
     })
 }
+
+// [POST] auth/logout
+module.exports.logout = async (req, res) => {
+    res.clearCookie('token'); 
+    res.clearCookie('cartId');
+
+}
+
 
 // [POST] auth/password/forgot
 module.exports.forgotPass = async (req, res) => {

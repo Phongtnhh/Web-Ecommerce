@@ -13,7 +13,9 @@ module.exports.index = async (req, res) => {
         return item;
     })
 
-    res.json(newProducts);
+    res.json({
+        newProducts : newProducts
+    });
 }
 
 // [GET] product/:slug
