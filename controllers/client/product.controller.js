@@ -1,6 +1,7 @@
 const Product = require("../../model/product.model");
 const ProductCategory = require("../../model/product-category.model");
 const ProductCategoryHelper = require("../../helpers/product-category");
+
 // [GET] /products
 module.exports.index = async (req, res) => {
     const products = await Product.find({
@@ -18,7 +19,7 @@ module.exports.index = async (req, res) => {
     });
 }
 
-// [GET] product/:slug
+// [GET] products/detail/:slug
 module.exports.detail = async (req, res) => {
     try{
         const find = {
@@ -36,22 +37,21 @@ module.exports.detail = async (req, res) => {
     
 }
 
-// [GET] product/:slugCategory
+// [GET] products/:slugCategory
 module.exports.category = async (req, res) => {
     try{
-        const productCategory = ProductCategory.findOne({
+        const productCategory = await ProductCategory.findOne({
             slug : req.params.slugCategory,
-            deleted: false
+            deleted: false,
+            status : "active"
         });
-
-        
         const listSubCategory = await ProductCategoryHelper.getSubCategory(productCategory.id); 
+    
         const listSubCategoryId = listSubCategory.map(item => item.id);
-
-        const products = Product.find({
-            product_category_id : {$in : [productCategory.id,...listSubCategoryId]},
+        const products = await Product.find({
+            product_category_id : {$in : [productCategory.id, ...listSubCategoryId]},
             deleted : false,
-        });
+        }).sort({ position: "desc"});
 
         res.json({
             code : 200,
@@ -59,7 +59,10 @@ module.exports.category = async (req, res) => {
             products : products 
         })
     }catch(error){
-        
+        res.json({
+            code : 404,
+            massage : "loi"
+        })
     }
     
 }

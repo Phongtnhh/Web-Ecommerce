@@ -37,7 +37,7 @@ module.exports.login = async (req, res)=> {
 }
 
 
-// [GET]
+// [POST] admin/auth/logout
 module.exports.logout= async (req, res)=> {
     res.clearCookie("token");
 }

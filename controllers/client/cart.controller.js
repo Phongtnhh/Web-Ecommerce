@@ -16,7 +16,6 @@ module.exports.index = async (req, res) => {
 
             
             item.productInfo = productInfo;
-            console.log(item, productInfo);
             item.totalPrice = productInfo.price * item.quantity;
         }
     }
@@ -32,7 +31,7 @@ module.exports.index = async (req, res) => {
 // [POST] cart/add
 module.exports.addPost = async (req, res) => {
     const productId =  req.body.productId;
-    const quantity = req.body.quantity;
+    const quantity = parseInt(req.body.quantity);
     const cartId = req.cookies.cartId;
 
     const cart = await Cart.findOne({

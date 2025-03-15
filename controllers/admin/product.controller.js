@@ -58,12 +58,13 @@ module.exports.index = async (req, res) => {
 
 // [PATCH] /admin/products/change-status
 module.exports.changeStatus = async (req, res) => {
-    const id = req.params.id;
-    const status = req.params.status;
+    const id = req.body.id;
+    const status = req.body.status;
     const updatedBy = {
         account_id: req.account.id,
         updateAt : new Date()
     }
+    console.log(req.body);
     await Product.updateOne({
         _id: id
     }, {
@@ -128,7 +129,7 @@ module.exports.changeMulti = async (req, res) => {
 
 // [PATCH] /admin/products/deleteItem
 module.exports.deleteItem = async (req, res) => {
-    const id = req.params.id;
+    const id = req.body.id;
     await Product.updateOne({
         _id: id
     }, {
@@ -162,10 +163,10 @@ module.exports.createPost = async (req, res) => {
 
 }
 
-// [GET] /admi/products/edit/:id
+// [GET] /admi/products/edit/:slug
 module.exports.edit = async (req, res) => {
     const product = await Product.findOne({
-        _id: req.params.id
+        slug: req.params.slug
     });
 
     if (!product) {
@@ -177,26 +178,28 @@ module.exports.edit = async (req, res) => {
     res.json(product);
 }
 
-// [PATCH] /admi/products/edit
+// [PATCH] /admin/products/edit
 module.exports.editPatch = async (req, res) => {
-    const id = req.params.id;
+    const id = req.body.id;
 
     req.body.price = parseInt(req.body.price);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock);
     req.body.position = parseInt(req.body.position);
-
+    console.log(req.body);
     try {
         const updatedBy = {
             account_id : req.account.id,
             updatedAt : new Date()
         }
 
-        await Product.updateOne({
-            _id: id
-        },{ ...req.body,
-        $push: {updatedBy : updatedBy}
-        });
+        const result = await Product.updateOne(
+            { _id: id }, 
+            { 
+                ...req.body, 
+                $push: { updatedBy: updatedBy } 
+            }
+        );
         res.json({
             code : 200,
             message: "Cap nhap thanh cong!",
@@ -210,12 +213,12 @@ module.exports.editPatch = async (req, res) => {
 
 }
 
-// [GET] /admin/products/detail/:id
+// [GET] /admin/products/detail/:slug
 module.exports.detailItem = async (req, res) => {
     try {
         const find = {
             deleted: false,
-            _id: req.params.id
+            slug: req.params.slug
         };
 
         const product = await Product.findOne(find);

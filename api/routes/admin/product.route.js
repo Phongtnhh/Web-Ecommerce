@@ -6,22 +6,22 @@ const validate = require("../../../validate/admin/product.validate");
 
 router.get("/", controller.index );
 
-router.patch("/change-status/:status/:id", controller.changeStatus);
+router.patch("/change-status", controller.changeStatus);
 
-router.patch("/change-multi/", controller.changeMulti);
+router.patch("/change-multi", controller.changeMulti);
 
-router.patch("/delete-item/:id", controller.deleteItem);
+router.patch("/delete-item", controller.deleteItem);
 
 router.post("/createPost",
     validate.createPost,
     controller.createPost);
 
-router.get('/edit/:id', controller.edit);
+router.get('/edit/:slug', controller.edit);
 
-router.patch('/edit/:id',
+router.patch('/edit',
     validate.createPost,
     controller.editPatch);
 
-router.get('/detail/:id', controller.detailItem);
+router.get('/detail/:slug', controller.detailItem);
 
 module.exports = router;

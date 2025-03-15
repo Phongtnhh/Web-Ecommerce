@@ -15,9 +15,9 @@ module.exports.cartId = async (req, res, next) => {
         });
 
         cart.totalQuantity = cart.products.reduce((sum, item) => sum + item.quantity, 0);
-        // res.json({
-        //     miniCart : cart,
-        // })
+        
+        req.miniCart = cart;
+        
     }
     next();
 }

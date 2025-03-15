@@ -11,7 +11,10 @@ const accountSchema = new mongoose.Schema({
         default: generate.generateRandomString(20),
     },
     phone: String,
-    role_id : String,
+    role_id : {
+        type: String,
+        default : "",
+    },
     status: String,
     deleted : {
         type : Boolean,

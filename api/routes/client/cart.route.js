@@ -7,8 +7,8 @@ router.get("/", controller.index );
 
 router.post("/add", controller.addPost );
 
-router.get("/delete", controller.delete );
+router.delete("/delete", controller.delete );
 
-router.get("/update-quantity", controller.updateQuantity );
+router.patch("/update-quantity", controller.updateQuantity );
 
 module.exports = router;

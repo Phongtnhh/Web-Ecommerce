@@ -7,7 +7,6 @@ module.exports.getSubCategory = async (parentId) => {
             status: "active",
             deleted: false,
         });
-
         let allSub = [...subs];
 
         for (const sub of subs) {

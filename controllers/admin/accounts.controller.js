@@ -21,7 +21,7 @@ module.exports.create = async (req, res)=> {
     if(emailExist){
         res.json({
             code : 400,
-            message: "Email khong ton tai"
+            message: "Email da ton tai"
         })
     }else{
         req.body.password = md5(req.body.password);
@@ -60,5 +60,4 @@ module.exports.edit = async (req, res)=> {
             massage: "cap nhap thanh cong!"
         })
     }
-    res.redirect("back");
 }

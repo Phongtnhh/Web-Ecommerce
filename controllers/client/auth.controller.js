@@ -48,7 +48,6 @@ module.exports.login = async (req, res) => {
         })
         return
     }
-    console.log(md5(password));
     if(md5(password) !== user.password) {
         
         res.json({
@@ -73,7 +72,6 @@ module.exports.login = async (req, res) => {
     if(cart){
         res.cookie("cartId", cart.id);
     }else{
-        console.log("chay qua day");
         await Cart.updateOne({
             _id : req.cookies.cartId,
         },{
@@ -91,10 +89,12 @@ module.exports.login = async (req, res) => {
 
 // [POST] auth/logout
 module.exports.logout = async (req, res) => {
-    res.clearCookie('token'); 
-    res.clearCookie('cartId');
+    res.clearCookie('token', { path: '/' });
+    res.clearCookie('cartId', { path: '/' });
 
-}
+    res.status(200).json({ message: "Logout successful" });
+};
+
 
 
 // [POST] auth/password/forgot
