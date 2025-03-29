@@ -15,7 +15,8 @@ module.exports.index = async (req, res) => {
     })
 
     res.json({
-        newProducts : newProducts
+        newProducts : newProducts,
+        layoutProductCategory : req.newProductsCategory
     });
 }
 

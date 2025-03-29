@@ -4,23 +4,30 @@ const Cart = require("../../model/cart.model");
 // [GET] cart
 module.exports.index = async (req, res) => {
     const cartId = req.cookies.cartId;
-    const cart = await Cart.findOne({
+    let cart = await Cart.findOne({
         _id : cartId,
     });
     if(cart.products.length > 0){
-        for(const item of cart.products){
+        for(let item of cart.products){
             const productId = item.product_id;
             const productInfo = await Product.findOne({
                 _id : productId,
             }).select("title thumbnail slug price");
 
-            
-            item.productInfo = productInfo;
-            item.totalPrice = productInfo.price * item.quantity;
+            if (productInfo) {
+                item.productInfo = {...productInfo};
+                totalPrice = productInfo.price * item.quantity;
+            }
+
+            var _item = {...item, productInfo, totalPrice}
+            // item = _item
+
+            console.log(_item);
         }
     }
-
+    
     cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
     const result = {
         code : 200,
         cart : cart
