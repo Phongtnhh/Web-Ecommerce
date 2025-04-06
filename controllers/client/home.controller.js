@@ -7,6 +7,7 @@ module.exports.index = async (req, res) => {
         deleted : false,
     };
     const product =  await Product.find(find).sort({position: 1});
+    console.log(req.newProductsCategory);
     res.json({
         code : 200,
         products : product,

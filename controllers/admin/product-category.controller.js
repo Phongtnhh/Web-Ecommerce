@@ -10,7 +10,9 @@ module.exports.index = async (req, res) => {
         };
 
         const records = await ProductCategory.find(find);
-        res.json(records);
+        const newRecords = createTreeHelper.tree(records);
+        console.log(newRecords);
+        res.json(newRecords);
     } else {
         res.json({
             code: 400,
@@ -26,7 +28,7 @@ module.exports.create = async (req, res) => {
 
     const records = await ProductCategory.find(find);
     const newRecords = createTreeHelper.tree(records);
-
+    console.log(newRecords);
     res.json(newRecords);
 }
 // [POST] admin/product-category /create
