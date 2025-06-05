@@ -30,7 +30,7 @@ module.exports.login = async (req, res)=> {
         return;
     }
     const payload = {
-            id: record.id.toString(), 
+            account_id: record.id.toString(), 
         };
 
     const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });

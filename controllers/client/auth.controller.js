@@ -80,8 +80,8 @@ module.exports.login = async (req, res) => {
         });
     }
     const payload = {
-            email : req.body.email,
-            password : req.body.password,
+            user_id: user.id,
+            email : req.body.email
         };
     const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
     res.json({

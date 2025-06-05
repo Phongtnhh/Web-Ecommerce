@@ -27,7 +27,7 @@ module.exports = (app) => {
 
     app.use(PATH_ADMIN + '/myaccount', myAccountRoute);
 
-    app.use(PATH_ADMIN + '/revenue', envenuRoute);
+    app.use(PATH_ADMIN + '/revenue',authMiddleware.requireAuth, envenuRoute);
 
     app.use(PATH_ADMIN + '/order', orderRoute);
 
