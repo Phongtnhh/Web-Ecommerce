@@ -34,6 +34,7 @@ module.exports.login = async (req, res)=> {
         };
 
     const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
+    
     res.json({
         code: 200,
         message : "dang nhap thanh cong",
