@@ -2,10 +2,10 @@ const User = require("../../model/user.model");
 const Cart = require("../../model/cart.model");
 const forgotPass= require("../../model/forgot-password.model");
 const sendMailHelper = require("../../helpers/sendMail");
+const jwt = require("jsonwebtoken");
 
 const md5 = require("md5");
 const generate =  require("../../helpers/generate");
-
 
 // [POST] auth/register
 module.exports.register = async (req, res) => {
@@ -34,6 +34,7 @@ module.exports.register = async (req, res) => {
 
 // [POST] auth/login
 module.exports.login = async (req, res) => {
+
     const email = req.body.email;
     const password = req.body.password;
 
@@ -78,8 +79,11 @@ module.exports.login = async (req, res) => {
             user_id: user.id,
         });
     }
-
-    const token = user.tokenUser;
+    const payload = {
+            email : req.body.email,
+            password : req.body.password,
+        };
+    const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
     res.json({
         code : 200,
         massage: "khi ban thay tin nhan nay, ban da dang nhap thanh cong",

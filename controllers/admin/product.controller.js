@@ -1,6 +1,7 @@
 const Product = require("../../model/product.model");
 const paginationHelper = require("../../helpers/pagination");
 const systemConfig = require("../../config/system");
+const Order = require("../../model/oder.model");
 const mongoose = require('mongoose');
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
@@ -54,6 +55,11 @@ module.exports.index = async (req, res) => {
     }
 
     res.json(result);
+}
+
+module.exports.audit = async (req, res) => {
+    const order = Order.find({});
+    res.json(order);
 }
 
 // [PATCH] /admin/products/change-status

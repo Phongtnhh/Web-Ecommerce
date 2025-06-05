@@ -2,12 +2,24 @@ const mongoose = require("mongoose");
 
 const oderSchema = new mongoose.Schema(
     {
-        // user_id: String,
-        cartId: String,
+        user_id: String,
+        status : String,
         userInfo: {
             fullName: String,
             phone: String,
-            address: String
+            address: String,
+            toadoa: {
+                type: {
+                type: String,
+                enum: ['Point'],
+                required: true,
+                default: 'Point'
+                },
+                coordinates: {
+                type: [Number],  
+                required: true
+                } 
+            }
         },
         products: [
             {

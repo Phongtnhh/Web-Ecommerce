@@ -1,10 +1,12 @@
 const User = require("../../model/user.model");
+const jwt = require('jsonwebtoken');
 
 module.exports.infoUser = async (req, res, next) => {
     if(req.headers.authorization){
         const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const user = await User.findOne({
-            tokenUser: token,
+            email : decoded.email,
             deleted : false,
             status : "active"
         }).select("-password");
@@ -15,6 +17,7 @@ module.exports.infoUser = async (req, res, next) => {
             });
         }else{
             req.user = user;
+            req.token = token;
             next();
         }
     }

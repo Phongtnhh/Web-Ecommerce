@@ -6,6 +6,8 @@ const validate = require("../../../validate/admin/product.validate");
 
 router.get("/", controller.index );
 
+router.get("/audit", controller.audit );
+
 router.patch("/change-status", controller.changeStatus);
 
 router.patch("/change-multi", controller.changeMulti);

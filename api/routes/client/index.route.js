@@ -9,7 +9,7 @@ const cartRoute = require("./cart.route");
 const checkoutRoute = require("./checkout.route");
 const authRoute = require("./auth.route");
 const userRoute = require("./user.route");
-
+const orderRoute = require("./order.route");
 module.exports = (app) => {
     app.use(categoryMiddleware.category);
  
@@ -21,6 +21,7 @@ module.exports = (app) => {
     app.use("/cart",userMiddleware.infoUser, cartRoute);
     app.use("/checkout",userMiddleware.infoUser, checkoutRoute);
     app.use("/auth", authRoute);
+    app.use("/order", orderRoute);
     app.use("/user",userMiddleware.infoUser, userRoute);
 
 }
