@@ -3,8 +3,8 @@ const systemConfig = require("../../config/system");
 //[POST] /oder
 module.exports.postOder = async (req, res) => {
     try {
+        const user_id = req.user.id;
         const {
-            user_id,
             status,
             userInfo,
             products
@@ -51,8 +51,9 @@ module.exports.postOder = async (req, res) => {
 };
 
 module.exports.view = async (req, res) => {
-    const id = req.body.user_id;
-    const record = await Order.find({
+    const id = req.user.id;
+    console.log(id);
+    const record = await Order.findOne({
         user_id : id,
     })
    res.json({ 
