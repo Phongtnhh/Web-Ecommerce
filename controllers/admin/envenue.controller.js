@@ -1,5 +1,6 @@
 const Order = require("../../model/oder.model");
 const systemConfig = require("../../config/system");
+const Product = require("../../model/product.model");
 
 // [GET] admin/envenue
 module.exports.index = async (req, res) => {
@@ -18,7 +19,7 @@ module.exports.index = async (req, res) => {
         let totalOrders = orders.length;
         let totalProductsSold = 0;
 
-        const revenueByProduct = {};
+        const revenueMap = {};
 
         orders.forEach(order => {
             order.products.forEach(product => {
@@ -29,26 +30,39 @@ module.exports.index = async (req, res) => {
                 totalRevenue += productRevenue;
                 totalProductsSold += quantity;
 
-                if (!revenueByProduct[product_id]) {
-                    revenueByProduct[product_id] = {
+                if (!revenueMap[product_id]) {
+                    revenueMap[product_id] = {
+                        productId: product_id,
                         totalRevenue: 0,
-                        totalSold: 0
+                        totalSold: 0,
                     };
                 }
 
-                revenueByProduct[product_id].totalRevenue += productRevenue;
-                revenueByProduct[product_id].totalSold += quantity;
+                revenueMap[product_id].totalRevenue += productRevenue;
+                revenueMap[product_id].totalSold += quantity;
             });
         });
 
+        const productIds = Object.keys(revenueMap);
+
+        const products = await Product.find({ _id: { $in: productIds } });
+
+        const revenueByProduct = products.map(product => {
+            const data = revenueMap[product._id];
+            return {
+                productId: product._id,
+                title: product.title,
+                thumbnail: product.thumbnail,
+                totalRevenue: data.totalRevenue,
+                totalSold: data.totalSold
+            };
+        });
+
         return res.json({
-            revenueByProduct : revenueByProduct,
-        }
-        )
+            revenueByProduct
+        });
     } catch (error) {
-        console.error("Error in envenue controller:", error);
+        console.error("Error in revenue controller:", error);
         return res.status(500).send("Internal server error");
     }
 };
-
-
