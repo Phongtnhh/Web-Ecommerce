@@ -22,14 +22,14 @@ module.exports = (app) => {
 
     app.use( PATH_ADMIN + '/role',authMiddleware.requireAuth, RoleRoute);
 
-    app.use(PATH_ADMIN + '/accounts', AccountRoute);
+    app.use(PATH_ADMIN + '/accounts',authMiddleware.requireAuth, AccountRoute);
     app.use(PATH_ADMIN + '/auth', authRoute);
 
     app.use(PATH_ADMIN + '/myaccount', myAccountRoute);
 
     app.use(PATH_ADMIN + '/revenue',authMiddleware.requireAuth, envenuRoute);
 
-    app.use(PATH_ADMIN + '/order', orderRoute);
+    app.use(PATH_ADMIN + '/order',authMiddleware.requireAuth, orderRoute);
 
-    app.use(PATH_ADMIN + '/setting', settingRoute);
+    app.use(PATH_ADMIN + '/setting',authMiddleware.requireAuth, settingRoute);
 }

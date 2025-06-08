@@ -20,9 +20,6 @@ module.exports.index = async (req, res) => {
             }
 
             var _item = {...item, productInfo, totalPrice}
-            // item = _item
-
-            console.log(_item);
         }
     }
     
@@ -139,4 +136,9 @@ module.exports.updateQuantity = async (req, res) => {
             "products.$.quantity" : quantity,
         },
     });
+    res.json({
+        code : 200,
+        massage : "update thanh cong"
+    }
+    )
 }; 

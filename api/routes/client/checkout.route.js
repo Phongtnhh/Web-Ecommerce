@@ -3,6 +3,8 @@ const router = express.Router();
 
 const controller = require("../../../controllers/client/checkout.controller");
 
-router.get("/", controller.index );
-router.post("/create_payment_url", controller.createPaymentUrl );
+router.post("/create_payment_url", controller.createOrder );
+
+
+router.post("/refundVN", controller.refundOrder );
 module.exports = router;
