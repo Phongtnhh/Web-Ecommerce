@@ -3,7 +3,7 @@ const Cart = require("../../model/cart.model");
 
 // [GET] cart
 module.exports.index = async (req, res) => {
-    const cartId = req.cookies.cartId;
+    const cartId = req.cartId;
     let cart = await Cart.findOne({
         _id : cartId,
     });
@@ -39,7 +39,7 @@ module.exports.index = async (req, res) => {
 module.exports.addPost = async (req, res) => {
     const productId =  req.body.productId;
     const quantity = parseInt(req.body.quantity);
-    const cartId = req.cookies.cartId;
+    const cartId = req.cartId;
 
     const cart = await Cart.findOne({
         _id: cartId
@@ -58,7 +58,12 @@ module.exports.addPost = async (req, res) => {
                 "products.$.quantity" : quantityNew
             }
         });
+        res.json({
+            code : 200,
+            massage : "thanh cong"
+        })
     }else{
+
         const objectCart = {
             product_id : productId,
             quantity: quantity
@@ -72,6 +77,11 @@ module.exports.addPost = async (req, res) => {
                 $push : {products: objectCart}
             }
         );
+
+        res.json({
+            code : 200,
+            massage : "thanh cong"
+        })
     }
 
     
@@ -79,25 +89,45 @@ module.exports.addPost = async (req, res) => {
 
 // [POST] cart/delete
 module.exports.delete = async (req, res) => {
-    const cartId = req.cookies.cartId;
-    const productId =  req.body.productId;
+    const cartId = req.cartId;
+    const productIds = req.body.productIds; // Giả sử là mảng các productId
 
-    await Cart.updateOne({
-        _id : cartId,
-    },{
-        $pull: {products : {product_id : productId}}
-    })
+    if (!Array.isArray(productIds) || productIds.length === 0) {
+        return res.status(400).json({
+            code: 400,
+            message: "Danh sách productIds không hợp lệ",
+        });
+    }
 
-    res.json({
-        code: 200,
-        massage : "xoa thanh cong",
-    })
-    
-}; 
+    try {
+        await Cart.updateOne(
+            { _id: cartId },
+            {
+                $pull: {
+                    products: {
+                        product_id: { $in: productIds },
+                    },
+                },
+            }
+        );
+
+        res.json({
+            code: 200,
+            message: "Xóa sản phẩm thành công",
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            code: 500,
+            message: "Lỗi máy chủ khi xóa sản phẩm",
+        });
+    }
+};
+
 
 // [POST] cart/update-quantity
 module.exports.updateQuantity = async (req, res) => {
-    const cartId = req.cookies.cartId;
+    const cartId = req.cartId;
     const productId = req.body.productId;
     const quantity = req.body.quantity;
 

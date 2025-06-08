@@ -9,28 +9,47 @@ const generate =  require("../../helpers/generate");
 
 // [POST] auth/register
 module.exports.register = async (req, res) => {
-    const existEmail = await User.findOne({
-        email : req.body.email,
-    });
+    try {
+        const existEmail = await User.findOne({
+            email: req.body.email,
+        });
 
-    if(existEmail){
-        res.json({
-            code: 400,
-            message: "Email da ton tai!"
-        })
-        return;
-    }else{
+        if (existEmail) {
+            return res.json({
+                code: 400,
+                message: "Email đã tồn tại!",
+            });
+        }
+
+        // Mã hoá mật khẩu
         req.body.password = md5(req.body.password);
+
+        // Tạo user mới
         const user = new User(req.body);
         await user.save();
+
+        // Tạo cart rỗng tương ứng
+        const emptyCart = new Cart({
+            user_id: user._id.toString(),
+            products: [],
+        });
+        await emptyCart.save();
+
         const token = user.tokenUser;
-        res.json({
-            code : 200,
+
+        return res.json({
+            code: 200,
             token: token,
-        })
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            code: 500,
+            message: "Lỗi máy chủ!",
+        });
     }
-    
-}
+};
+
 
 // [POST] auth/login
 module.exports.login = async (req, res) => {
@@ -64,26 +83,20 @@ module.exports.login = async (req, res) => {
             massage : "tai khoan dang bi khoa!"
         })
         return;
-    }
+    };
 
-    const cart = await Cart.findOne({
-       user_id: user.id
-    });
+        const cart = await Cart.findOne({
+            user_id : user.id
+        })
 
-    if(cart){
-        res.cookie("cartId", cart.id);
-    }else{
-        await Cart.updateOne({
-            _id : req.cookies.cartId,
-        },{
-            user_id: user.id,
-        });
-    }
     const payload = {
             user_id: user.id,
-            email : req.body.email
+            email : req.body.email,
+            cartId : cart.id
         };
+
     const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
+    
     res.json({
         code : 200,
         massage: "khi ban thay tin nhan nay, ban da dang nhap thanh cong",
@@ -94,12 +107,8 @@ module.exports.login = async (req, res) => {
 // [POST] auth/logout
 module.exports.logout = async (req, res) => {
     res.clearCookie('token', { path: '/' });
-    res.clearCookie('cartId', { path: '/' });
-
     res.status(200).json({ message: "Logout successful" });
 };
-
-
 
 // [POST] auth/password/forgot
 module.exports.forgotPass = async (req, res) => {

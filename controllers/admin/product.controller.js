@@ -57,9 +57,35 @@ module.exports.index = async (req, res) => {
     res.json(result);
 }
 
-module.exports.audit = async (req, res) => {
-    const order = Order.find({});
-    res.json(order);
+
+// [GET] /admin/products/:slugcategory
+module.exports.category = async (req, res) => {
+    try{
+        const productCategory = await ProductCategory.findOne({
+            slug : req.params.slugCategory,
+            deleted: false,
+            status : "active"
+        });
+        const listSubCategory = await ProductCategoryHelper.getSubCategory(productCategory.id); 
+    
+        const listSubCategoryId = listSubCategory.map(item => item.id);
+        const products = await Product.find({
+            product_category_id : {$in : [productCategory.id, ...listSubCategoryId]},
+            deleted : false,
+        }).sort({ position: "desc"});
+
+        res.json({
+            code : 200,
+            massage : "san pham theo danh muc",
+            products : products 
+        })
+    }catch(error){
+        res.json({
+            code : 404,
+            massage : "loi"
+        })
+    }
+    
 }
 
 // [PATCH] /admin/products/change-status

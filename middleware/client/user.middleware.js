@@ -16,6 +16,7 @@ module.exports.infoUser = async (req, res, next) => {
                 message: "khong co quyen truy cap!"
             });
         }else{
+            req.cartId = decoded.cartId,
             req.user = user;
             req.token = token;
             next();

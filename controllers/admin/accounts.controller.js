@@ -28,9 +28,11 @@ module.exports.create = async (req, res)=> {
     
         const record = new Account(req.body);
         await record.save();
-    }
-
-    
+        res.json({
+            code: 200,
+            message: "Tạo tài khoản thành công"
+        });
+    } 
 }
 
 // [PATCH] admin/account/edit
@@ -57,7 +59,7 @@ module.exports.edit = async (req, res)=> {
         await Account.updateOne({_id : id},req.body);
         res.json({
             code : 200,
-            massage: "cap nhap thanh cong!"
+            message: "cap nhap thanh cong!"
         })
     }
 }

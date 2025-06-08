@@ -10,9 +10,7 @@ module.exports.index = async (req, res) => {
         };
 
         const records = await ProductCategory.find(find);
-        const newRecords = createTreeHelper.tree(records);
-        console.log(newRecords);
-        res.json(newRecords);
+        res.json(records);
     } else {
         res.json({
             code: 400,
@@ -28,7 +26,7 @@ module.exports.create = async (req, res) => {
 
     const records = await ProductCategory.find(find);
     const newRecords = createTreeHelper.tree(records);
-    console.log(newRecords);
+
     res.json(newRecords);
 }
 // [POST] admin/product-category /create
@@ -45,12 +43,12 @@ module.exports.createPost = async (req, res) => {
         await record.save();
         res.json({
             code: 200,
-            massage: "ahihihihihihi"
+            message: "ahihihihihihi"
         });
     } else {
         res.json({
             code: 400,
-            massage: "Hong co quyen be oi",
+            message: "Hong co quyen be oi",
         })
     }
 
@@ -60,35 +58,50 @@ module.exports.createPost = async (req, res) => {
 // [PATCH] admin/product-category /edit
 module.exports.edit = async (req, res) => {
     if (req.role.permissions.includes("products-category_create")) {
-        const id = req.body.id;
+        try {
+            const id = req.body.id;
+            req.body.position = parseInt(req.body.position);
 
-        req.body.position = parseInt(req.body.position);
+            const result = await ProductCategory.updateOne({ _id: id }, req.body);
 
-        await ProductCategory.updateOne({
-            _id: id
-        }, req.body);
-    }else{
+            if (result.modifiedCount > 0) {
+                res.json({
+                    code: 200,
+                    message: "Cập nhật thành công!"
+                });
+            } else {
+                res.json({
+                    code: 200,
+                    message: "Không có thay đổi nào được thực hiện."
+                });
+            }
+        } catch (error) {
+            res.status(500).json({
+                code: 500,
+                message: "Đã xảy ra lỗi trong quá trình cập nhật.",
+                error: error.message
+            });
+        }
+    } else {
         res.json({
-            code : 200,
-            massage: "khong co quyen!"
-        })
+            code: 200,
+            message: "Không có quyền!"
+        });
     }
 }
+
 
 module.exports.deleted = async (req, res) => {
     if (req.role.permissions.includes("products-category_delete")) {
         const id = req.body.id;
-        await ProductCategory.updateOne({
-            _id: id
-        }, {
-            deleted : true,
-        });
-    }else{
-        res.json({
-            code : 200,
-            massage: "khong co quyen!"
-        })
+        const result = await ProductCategory.updateOne({ _id: id }, { deleted: true });
+
+        if (result.modifiedCount > 0) {
+            res.json({ code: 200, message: "Xóa thành công" });
+        } else {
+            res.json({ code: 404, message: "Không tìm thấy danh mục hoặc đã bị xóa" });
+        }
+    } else {
+        res.json({ code: 403, message: "Không có quyền!" });
     }
 }
-
-

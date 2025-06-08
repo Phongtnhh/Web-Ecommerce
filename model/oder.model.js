@@ -21,6 +21,18 @@ const oderSchema = new mongoose.Schema(
                 } 
             }
         },
+        toadoaDon: {
+                type: {
+                type: String,
+                enum: ['Point'],
+                required: true,
+                default: 'Point'
+                },
+                coordinates: {
+                type: [Number],  
+                required: true
+                } 
+            },
         products: [
             {
                 product_id: String,
