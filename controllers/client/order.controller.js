@@ -50,6 +50,7 @@ module.exports.postOder = async (req, res) => {
     }
 };
 
+// [GET] /View order cuar 1 nguoi dung
 module.exports.view = async (req, res) => {
     const id = req.user.id;
     console.log(id);
@@ -63,6 +64,7 @@ module.exports.view = async (req, res) => {
    )
 };
 
+// [POST] View 1 don hang chi tiet
 module.exports.detail = async (req, res) => {
     const id = req.params.id;
     const record = await Order.findOne({
@@ -71,6 +73,24 @@ module.exports.detail = async (req, res) => {
    res.json({ 
         code : 200,
         order : record,
+   }
+   )
+};
+
+
+// [PATCH] sửa trạng thái đơn hàng
+module.exports.editstatus = async (req, res) => {
+    const id = req.params.id;
+    const status = req.body.status;
+    await Order.updateOne({
+        _id : id,
+
+    },{
+        status : status,
+    })
+   res.json({ 
+        code : 200,
+        message : "Thanh doi thanh cong",
    }
    )
 };

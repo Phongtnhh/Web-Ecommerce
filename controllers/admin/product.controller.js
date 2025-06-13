@@ -1,7 +1,7 @@
 const Product = require("../../model/product.model");
 const paginationHelper = require("../../helpers/pagination");
 const systemConfig = require("../../config/system");
-const Order = require("../../model/oder.model");
+const ProductCategory = require("../../model/product-category.model");
 const mongoose = require('mongoose');
 // [GET] /admin/products
 module.exports.index = async (req, res) => {

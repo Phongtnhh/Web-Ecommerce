@@ -9,4 +9,6 @@ router.get("/view", controller.view);
 
 router.get("/detail/:id", controller.detail);
 
+router.patch("/edit/:id", controller.editstatus);
+
 module.exports = router;
