@@ -12,9 +12,7 @@ const userRoute = require("./user.route");
 const orderRoute = require("./order.route");
 module.exports = (app) => {
     app.use(categoryMiddleware.category);
- 
-    app.use(cartMiddleware.cartId);
-    
+    app.use(cartMiddleware.cartId); // lấy ra số lượng sp trong giỏ hàng
     app.use("/", homeRoutes );
     app.use("/products", productRoutes);
     app.use("/search", searchRoute);
@@ -23,5 +21,4 @@ module.exports = (app) => {
     app.use("/auth", authRoute);
     app.use("/order",userMiddleware.infoUser, orderRoute);
     app.use("/user",userMiddleware.infoUser, userRoute);
-
 }

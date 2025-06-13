@@ -1,6 +1,6 @@
 const Order = require("../../model/oder.model");
 const systemConfig = require("../../config/system");
-//[POST] /oder
+//[POST] Them 1 don order
 module.exports.postOder = async (req, res) => {
     try {
         const user_id = req.user.id;
@@ -64,7 +64,7 @@ module.exports.view = async (req, res) => {
    )
 };
 
-// [POST] View 1 don hang chi tiet
+// [] View 1 don hang chi tiet
 module.exports.detail = async (req, res) => {
     const id = req.params.id;
     const record = await Order.findOne({

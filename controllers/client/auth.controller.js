@@ -85,7 +85,7 @@ module.exports.login = async (req, res) => {
         return;
     };
 
-        const cart = await Cart.findOne({
+    const cart = await Cart.findOne({
             user_id : user.id
         })
 
@@ -139,6 +139,10 @@ module.exports.forgotPass = async (req, res) => {
         Ma OTP la <b>${objectFotgotPass.otp}</b>
     `;
     sendMailHelper.sendMail(email, subject, html);
+    res.json({
+        code : 200,
+        massage : "gửi otp thành công",
+    })
 }
 
 // [POST] auth/password/otp
@@ -163,25 +167,24 @@ module.exports.otp = async (req, res) => {
         email: email,
     });
 
-    res.cookies("tokenUser", user.tokenUser);
     res.json({
         code : 200,
-        token: user.tokenUser,
+        user: user
     })
 }
 
 // [POST] auth/password/reset
 module.exports.reset = async (req, res) => {
     const password = req.body.password;
-    const token = req.cookies.tokenUser;
+    const id = req.body.id;
 
     await User.updateOne({
-        tokenUser: token
+        _id : id,
     },{
         password : md5(password),
     })
     res.json({
         code : 200,
-
+        message : "Thay đổi mật khẩu thành công",
     })
 }
