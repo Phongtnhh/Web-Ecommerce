@@ -36,6 +36,8 @@ const oderSchema = new mongoose.Schema(
         products: [
             {
                 product_id: String,
+                title : String,
+                thumbnail : String,
                 price: Number,
                 discountPercentage: Number,
                 quantity: Number
