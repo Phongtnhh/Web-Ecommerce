@@ -189,6 +189,10 @@ module.exports.createPost = async (req, res) => {
 
     const product = new Product(req.body);
     product.save();
+    res.json({
+        code : 200,
+        message : "them thanh cong",
+    })
 
 }
 
